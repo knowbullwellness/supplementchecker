@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>No Bull Supplement Checker | Know Bull Wellness</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:       #0d1b2a;
+      --navy-mid:   #152233;
+      --navy-light: #1e3148;
+      --navy-card:  #19293d;
+      --cyan:       #00d4ff;
+      --cyan-glow:  rgba(0,212,255,0.12);
+      --green:      #00e676;
+      --green-bg:   rgba(0,230,118,0.08);
+      --yellow:     #ffd600;
+      --yellow-bg:  rgba(255,214,0,0.08);
+      --red:        #ff3d57;
+      --red-bg:     rgba(255,61,87,0.08);
+      --text:       #e8f4f8;
+      --muted:      #7a9bb5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--navy-mid);
+      border-bottom: 2px solid var(--cyan);
+      padding: 28px 24px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% -10%, var(--cyan-glow) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .header-tag {
+      display: inline-block;
+      background: var(--cyan);
+      color: var(--navy);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 2px;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(30px, 7vw, 50px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      line-height: 1;
+      color: #fff;
+    }
+    .header h1 span { color: var(--cyan); }
+    .header p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 700px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── APPROVED BRANDS (always visible) ── */
+    .brands-section {
+      margin-top: 28px;
+    }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--navy-light);
+    }
+
+    .brands-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .brand-card {
+      display: block;
+      background: var(--navy-card);
+      border: 1.5px solid var(--navy-light);
+      border-radius: 10px;
+      padding: 16px 14px;
+      text-decoration: none;
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--cyan);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .brand-card:hover {
+      border-color: var(--cyan);
+      background: var(--navy-light);
+      transform: translateY(-2px);
+    }
+    .brand-card:hover::before { opacity: 1; }
+
+    .brand-check {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .brand-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .brand-cta {
+      display: inline-block;
+      margin-top: 10px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    /* ── SEARCH ── */
+    .search-section { margin-top: 24px; }
+    .search-row { display: flex; gap: 10px; }
+    .search-input {
+      flex: 1;
+      background: var(--navy-mid);
+      border: 1.5px solid var(--navy-light);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 16px;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--cyan); }
+    .search-input::placeholder { color: var(--muted); }
+    .search-btn {
+      background: var(--cyan);
+      border: none;
+      border-radius: 8px;
+      color: var(--navy);
+      cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 14px 28px;
+      text-transform: uppercase;
+      transition: background 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .search-btn:hover { background: #33ddff; }
+    .search-btn:active { transform: scale(0.97); }
+    .search-btn:disabled { background: var(--navy-light); color: var(--muted); cursor: not-allowed; }
+
+    /* ── LOADING ── */
+    .loading { display: none; text-align: center; padding: 40px 20px; }
+    .loading.active { display: block; }
+    .spinner {
+      width: 38px; height: 38px;
+      border: 3px solid var(--navy-light);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 14px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { color: var(--muted); font-size: 14px; }
+
+    /* ── RESULTS ── */
+    .results { display: none; margin-top: 24px; }
+    .results.active { display: block; }
+
+    /* ── VERDICT CARD ── */
+    .verdict-card {
+      border-radius: 10px;
+      border: 2px solid;
+      padding: 22px;
+      margin-bottom: 14px;
+    }
+    .verdict-card.approved { border-color: var(--green); background: var(--green-bg); }
+    .verdict-card.caution  { border-color: var(--yellow); background: var(--yellow-bg); }
+    .verdict-card.skip     { border-color: var(--red);    background: var(--red-bg); }
+
+    .verdict-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .verdict-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .verdict-badge {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 4px;
+      border: 1.5px solid currentColor;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .approved .verdict-badge { color: var(--green); }
+    .caution  .verdict-badge { color: var(--yellow); }
+    .skip     .verdict-badge { color: var(--red); }
+
+    .verdict-summary {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    /* score bar */
+    .score-row { display: flex; align-items: center; gap: 12px; }
+    .score-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      width: 80px;
+      flex-shrink: 0;
+    }
+    .score-bar-track {
+      flex: 1;
+      height: 7px;
+      background: var(--navy-light);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.9s ease;
+    }
+    .approved .score-bar-fill { background: var(--green); }
+    .caution  .score-bar-fill { background: var(--yellow); }
+    .skip     .score-bar-fill { background: var(--red); }
+    .score-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      width: 40px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .approved .score-num { color: var(--green); }
+    .caution  .score-num { color: var(--yellow); }
+    .skip     .score-num { color: var(--red); }
+
+    /* ── DETAIL GRID ── */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .detail-card {
+      background: var(--navy-card);
+      border: 1.5px solid var(--navy-light);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .detail-card-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+    .detail-list { list-style: none; }
+    .detail-list li {
+      font-size: 13px;
+      color: var(--text);
+      padding: 4px 0;
+      border-bottom: 1px solid var(--navy-light);
+      line-height: 1.4;
+    }
+    .detail-list li:last-child { border-bottom: none; }
+    .detail-list.pros li::before { content: '✓ '; color: var(--green); font-weight: 700; }
+    .detail-list.cons li::before { content: '✗ '; color: var(--red); font-weight: 700; }
+
+    /* ── BADGES ── */
+    .badges-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .info-badge {
+      background: var(--navy-card);
+      border: 1.5px solid var(--navy-light);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-badge .lbl {
+      color: var(--muted);
+      font-size: 11px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .info-badge .val { color: var(--text); font-weight: 600; }
+
+    /* ── BUY / RECOMMENDATION BLOCK ── */
+    .action-block {
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    /* Green: approved — show buy link */
+    .buy-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--navy-card);
+      border: 1.5px solid var(--green);
+      border-radius: 10px;
+      padding: 16px 20px;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .buy-link:hover { background: var(--navy-light); border-color: #33ff99; }
+    .buy-link-left {}
+    .buy-link-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 3px;
+    }
+    .buy-link-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .buy-link-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .buy-link-arrow { color: var(--green); font-size: 22px; flex-shrink: 0; }
+
+    /* Yellow/Red: not approved — show brand recommendation */
+    .rec-block {
+      background: var(--navy-card);
+      border: 1.5px solid var(--navy-light);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .rec-block-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 6px;
+    }
+    .rec-block-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+    .rec-brand-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .rec-brand-btn {
+      display: inline-block;
+      background: var(--navy-mid);
+      border: 1.5px solid var(--cyan);
+      border-radius: 6px;
+      color: var(--cyan);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .rec-brand-btn:hover { background: var(--cyan); color: var(--navy); }
+
+    /* ── ERROR ── */
+    .error-box {
+      display: none;
+      background: rgba(255,61,87,0.08);
+      border: 1.5px solid var(--red);
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: var(--red);
+      font-size: 14px;
+      margin-top: 16px;
+    }
+    .error-box.active { display: block; }
+
+    /* ── AFFILIATE NOTE ── */
+    .affiliate-note {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 500px) {
+      .brands-grid { grid-template-columns: 1fr; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .search-row { flex-direction: column; }
+      .search-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-tag">Know Bull Wellness</div>
+    <h1>No Bull <span>Supplement</span> Checker</h1>
+    <p>Science-backed. Zero hype. Real answers.</p>
+  </div>
+
+  <div class="page">
+
+    <!-- APPROVED BRANDS — always visible -->
+    <div class="brands-section">
+      <div class="section-label">★ Know Bull Approved Brands</div>
+      <div class="brands-grid">
+
+        <a class="brand-card" href="https://www.amazon.com/stores/Thorne/page/E48C23A7-0AAB-49EF-BCD1-82C79785C24E?tag=knowbullwelln-20" target="_blank" rel="noopener noreferrer">
+          <div class="brand-check">✓ Approved</div>
+          <div class="brand-name">Thorne</div>
+          <div class="brand-sub">NSF Certified for Sport. Trusted by 100+ pro sports teams.</div>
+          <div class="brand-cta">Shop Store →</div>
+        </a>
+
+        <a class="brand-card" href="https://www.amazon.com/stores/Momentous/page/5EDBB5CA-FC09-4652-885E-455CBA04E2C5?tag=knowbullwelln-20" target="_blank" rel="noopener noreferrer">
+          <div class="brand-check">✓ Approved</div>
+          <div class="brand-name">Momentous</div>
+          <div class="brand-sub">NSF Certified. Used by every NFL team. Clean labels only.</div>
+          <div class="brand-cta">Shop Store →</div>
+        </a>
+
+        <a class="brand-card" href="https://www.amazon.com/stores/NordicNaturals/page/3A0D0037-5AAB-4AC6-B038-6C641DEEFB0F?tag=knowbullwelln-20" target="_blank" rel="noopener noreferrer">
+          <div class="brand-check">✓ Approved</div>
+          <div class="brand-name">Nordic Naturals</div>
+          <div class="brand-sub">The gold standard for omega-3. IFOS certified, triglyceride form.</div>
+          <div class="brand-cta">Shop Store →</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-section">
+      <div class="section-label">Check Any Supplement</div>
+      <div class="search-row">
+        <input
+          type="text"
+          id="suppInput"
+          class="search-input"
+          placeholder="e.g. Thorne Creatine, Athletic Greens, BCAA…"
+          autocomplete="off"
+        />
+        <button class="search-btn" id="searchBtn" onclick="runCheck()">Analyze</button>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Running the No Bull analysis…</p>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-box" id="errorBox"></div>
+
+    <!-- RESULTS -->
+    <div class="results" id="results"></div>
+
+    <!-- AFFILIATE NOTE -->
+    <p class="affiliate-note">
+      Know Bull Wellness uses affiliate links. We may earn a small commission if you purchase through our links — at no extra cost to you.<br>We only recommend what we'd actually use ourselves.
+    </p>
+
+  </div><!-- /page -->
+
+  <script>
+    const AFFILIATE = 'knowbullwelln-20';
+
+    const APPROVED_BRANDS = [
+      { name: 'Thorne',          url: `https://www.amazon.com/stores/Thorne/page/E48C23A7-0AAB-49EF-BCD1-82C79785C24E?tag=${AFFILIATE}` },
+      { name: 'Momentous',       url: `https://www.amazon.com/stores/Momentous/page/5EDBB5CA-FC09-4652-885E-455CBA04E2C5?tag=${AFFILIATE}` },
+      { name: 'Nordic Naturals', url: `https://www.amazon.com/stores/NordicNaturals/page/3A0D0037-5AAB-4AC6-B038-6C641DEEFB0F?tag=${AFFILIATE}` },
+    ];
+
+    document.getElementById('suppInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') runCheck();
+    });
+
+    async function runCheck() {
+      const supplement = document.getElementById('suppInput').value.trim();
+      if (!supplement) return;
+
+      document.getElementById('searchBtn').disabled = true;
+      document.getElementById('loading').classList.add('active');
+      document.getElementById('results').classList.remove('active');
+      document.getElementById('errorBox').classList.remove('active');
+
+      try {
+        const res = await fetch('/.netlify/functions/check-supplement', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ supplement }),
+        });
+        if (!res.ok) throw new Error('Server error');
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        render(data, supplement);
+      } catch (err) {
+        const box = document.getElementById('errorBox');
+        box.textContent = '⚠ ' + (err.message || 'Something went wrong. Please try again.');
+        box.classList.add('active');
+      } finally {
+        document.getElementById('loading').classList.remove('active');
+        document.getElementById('searchBtn').disabled = false;
+      }
+    }
+
+    function render(data, searched) {
+      const isApproved = data.verdict === 'APPROVED';
+      const vcClass = data.verdict === 'APPROVED' ? 'approved' : data.verdict === 'USE WITH CAUTION' ? 'caution' : 'skip';
+      const icon = isApproved ? '✓' : data.verdict === 'USE WITH CAUTION' ? '⚠' : '✗';
+      const score = data.confidenceScore || 0;
+
+      const prosHtml = (data.pros || []).map(p => `<li>${p}</li>`).join('');
+      const consHtml = (data.cons || []).map(c => `<li>${c}</li>`).join('');
+
+      const evidenceColor = { Strong: 'var(--green)', Moderate: 'var(--cyan)', Weak: 'var(--yellow)', None: 'var(--red)' }[data.evidenceStrength] || 'var(--muted)';
+      const testedLabel = data.thirdPartyTested === true ? '✓ Third-Party Tested' : data.thirdPartyTested === false ? '✗ Not Tested' : '? Unknown';
+
+      // Action block: buy link if approved, brand recommendation if not
+      let actionHtml = '';
+      if (isApproved) {
+        actionHtml = `
+          <a class="buy-link" href="${data.amazonLink}" target="_blank" rel="noopener noreferrer">
+            <div class="buy-link-left">
+              <div class="buy-link-tag">✓ No Bull Approved — Shop on Amazon</div>
+              <div class="buy-link-name">${data.name || searched}</div>
+              <div class="buy-link-sub">Affiliate link — supports Know Bull Wellness at no cost to you</div>
+            </div>
+            <div class="buy-link-arrow">→</div>
+          </a>`;
+      } else {
+        const brandBtns = APPROVED_BRANDS.map(b =>
+          `<a class="rec-brand-btn" href="${b.url}" target="_blank" rel="noopener noreferrer">${b.name} →</a>`
+        ).join('');
+        actionHtml = `
+          <div class="rec-block">
+            <div class="rec-block-tag">⚠ Know Bull Recommends Instead</div>
+            <div class="rec-block-text">This supplement didn't clear our bar. Skip the guesswork — browse one of our Know Bull Approved brands where every product is third-party tested and backed by real science.</div>
+            <div class="rec-brand-links">${brandBtns}</div>
+          </div>`;
+      }
+
+      const html = `
+        <div class="verdict-card ${vcClass}">
+          <div class="verdict-top">
+            <div class="verdict-name">${data.name || searched}</div>
+            <div class="verdict-badge">${icon} ${data.verdict}</div>
+          </div>
+          <p class="verdict-summary">${data.summary}</p>
+          <div class="score-row">
+            <span class="score-label">Confidence</span>
+            <div class="score-bar-track">
+              <div class="score-bar-fill" style="width:${score}%"></div>
+            </div>
+            <span class="score-num">${score}</span>
+          </div>
+        </div>
+
+        <div class="badges-row">
+          <div class="info-badge">
+            <span class="lbl">Evidence</span>
+            <span class="val" style="color:${evidenceColor}">${data.evidenceStrength || '—'}</span>
+          </div>
+          <div class="info-badge">
+            <span class="lbl">3rd Party</span>
+            <span class="val">${testedLabel}</span>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-card">
+            <div class="detail-card-label">Pros</div>
+            <ul class="detail-list pros">${prosHtml}</ul>
+          </div>
+          <div class="detail-card">
+            <div class="detail-card-label">Cons</div>
+            <ul class="detail-list cons">${consHtml}</ul>
+          </div>
+        </div>
+
+        ${actionHtml}
+      `;
+
+      const container = document.getElementById('results');
+      container.innerHTML = html;
+      container.classList.add('active');
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+</html>

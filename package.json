@@ -1,0 +1,7 @@
+{
+  "name": "know-bull-supplement-checker",
+  "version": "3.0.0",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0"
+  }
+}
