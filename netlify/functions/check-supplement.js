@@ -1,6 +1,3 @@
-const Anthropic = require("@anthropic-ai/sdk");
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 exports.handler = async function (event) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
@@ -29,20 +26,45 @@ Return ONLY a valid JSON object, no markdown, no preamble, no backticks:
 
 Verdict guide:
 - APPROVED (score 70-100): Strong evidence, clean ingredients, worth taking
-- USE WITH CAUTION (score 40-69): Mixed evidence or quality concerns  
+- USE WITH CAUTION (score 40-69): Mixed evidence or quality concerns
 - SKIP IT (score 0-39): Weak or no evidence, proprietary blends, red flags`;
 
-    const response = await client.messages.create({
-      model: "claude-opus-4-5",
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: "user", content: `Analyze this supplement: ${supplement}` }],
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: "user", content: `Analyze this supplement: ${supplement}` }],
+      }),
     });
 
-    const raw = response.content[0].text.trim();
-    const analysis = JSON.parse(raw);
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("Anthropic API error:", errText);
+      return { statusCode: 500, body: JSON.stringify({ error: "API error: " + errText }) };
+    }
 
-    // Build dynamic Amazon search link with affiliate tag
+    const apiData = await response.json();
+    const raw = apiData.content[0].text.trim();
+
+    let analysis;
+    try {
+      analysis = JSON.parse(raw);
+    } catch (e) {
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (match) {
+        analysis = JSON.parse(match[0]);
+      } else {
+        throw new Error("Could not parse response as JSON");
+      }
+    }
+
     const searchQuery = encodeURIComponent(analysis.amazonSearchQuery || supplement);
     analysis.amazonLink = `https://www.amazon.com/s?k=${searchQuery}&tag=knowbullwelln-20`;
 
@@ -51,11 +73,12 @@ Verdict guide:
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(analysis),
     };
+
   } catch (err) {
-    console.error(err);
+    console.error("Function error:", err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Analysis failed. Please try again." }),
+      body: JSON.stringify({ error: err.message || "Analysis failed. Please try again." }),
     };
   }
 };
